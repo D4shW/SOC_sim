@@ -1,0 +1,36 @@
+{
+  "soc": {
+    "name": "SOC Simulator v1.0",
+    "version": "1.0.0",
+    "log_file": "soc_logs.txt"
+  },
+  "thresholds": {
+    "brute_force_attempts": 5,
+    "brute_force_window_seconds": 60,
+    "suspicious_ports": [22, 23, 3389, 4444, 5900],
+    "max_failed_logins": 3
+  },
+  "simulator": {
+    "event_interval_min": 0.5,
+    "event_interval_max": 2.5,
+    "attack_probability": 0.35
+  },
+  "database": {
+    "path": "soc_database.db"
+  },
+  "gui": {
+    "refresh_rate_ms": 500,
+    "max_log_lines": 200,
+    "window_width": 1280,
+    "window_height": 800
+  },
+  "colors": {
+    "INFO": "#00FF88",
+    "WARNING": "#FF9900",
+    "CRITICAL": "#FF2255",
+    "BACKGROUND": "#0A0E1A",
+    "PANEL": "#111827",
+    "TEXT": "#E2E8F0",
+    "ACCENT": "#00D4FF"
+  }
+}
