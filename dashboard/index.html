@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SOC | Advanced Threat Analytics</title>
+    <title>SOC | Advanced Threat Analytics V3</title>
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600&family=Inter:wght@400;700&display=swap"
         rel="stylesheet">
@@ -14,14 +14,13 @@
 <body>
     <div class="siem-layout">
         <aside class="sidebar">
-            <div class="logo">
-                <span class="shield">🛡️</span> SOC_SIM
-            </div>
+            <div class="logo"><span class="shield">🛡️</span> SOC_SIM</div>
             <nav>
                 <ul id="nav-menu">
                     <li class="active" onclick="switchView('overview', this)">📊 Vue d'ensemble</li>
                     <li onclick="switchView('alerts', this)">🚨 Alertes (Critical)</li>
-                    <li onclick="switchView('history', this)">📜 Historique complet</li>
+                    <li onclick="switchView('history', this)">📜 Historique</li>
+                    <li onclick="switchView('missions', this)" class="mission-tab">🎮 Mode Mission</li>
                 </ul>
             </nav>
             <div class="score-card">
@@ -54,7 +53,7 @@
                         <canvas id="lineChart"></canvas>
                     </div>
                     <div class="panel chart-panel">
-                        <h2>🍩 Répartition des Niveaux</h2>
+                        <h2>🍩 Répartition</h2>
                         <div class="doughnut-container">
                             <canvas id="doughnutChart"></canvas>
                         </div>
@@ -63,18 +62,18 @@
 
                 <section class="ops-grid">
                     <div class="panel control-panel">
-                        <h2>🎯 Lancement de Scénarios</h2>
+                        <h2>🎯 Lancement Manuel</h2>
                         <div class="btn-grid">
                             <button class="btn btn-attack" onclick="triggerAttack('brute')">🔑 Brute Force SSH</button>
                             <button class="btn btn-attack" onclick="triggerAttack('scan')">📡 Scan de Ports</button>
                             <button class="btn btn-attack" onclick="triggerAttack('sqli')">💉 Injection SQL</button>
                             <button class="btn btn-attack" onclick="triggerAttack('ddos')">🌊 Attaque DDoS</button>
-                            <button class="btn btn-attack" onclick="triggerAttack('malware')">🦠 Malware / EDR</button>
+                            <button class="btn btn-attack" style="border-color: #f59e0b;"
+                                onclick="triggerAttack('false_positive')">🚨 Faux Positif (Employé)</button>
                         </div>
                     </div>
-
                     <div class="panel terminal-panel">
-                        <h2>📟 Live Event Logs</h2>
+                        <h2>📟 Live Event Logs (Cliquer sur une IP pour analyser)</h2>
                         <div class="terminal" id="terminal">
                             <div class="log log-info">System initialized. Awaiting events...</div>
                         </div>
@@ -85,19 +84,18 @@
             <div id="view-alerts" class="view">
                 <div class="panel">
                     <h2>Tableau de bord de remédiation</h2>
-                    <p>Seules les alertes nécessitant une action de l'analyste sont affichées ici.</p>
                     <table class="data-table">
                         <thead>
                             <tr>
                                 <th>Heure</th>
                                 <th>Niveau</th>
-                                <th>Adresse Source</th>
-                                <th>Description de l'alerte</th>
+                                <th>IP Source</th>
+                                <th>Description</th>
+                                <th>Pédagogie</th>
                                 <th>Action SOC</th>
                             </tr>
                         </thead>
-                        <tbody id="alerts-table-body">
-                        </tbody>
+                        <tbody id="alerts-table-body"></tbody>
                     </table>
                 </div>
             </div>
@@ -115,14 +113,46 @@
                                 <th>Message</th>
                             </tr>
                         </thead>
-                        <tbody id="history-table-body">
-                        </tbody>
+                        <tbody id="history-table-body"></tbody>
                     </table>
+                </div>
+            </div>
+
+            <div id="view-missions" class="view">
+                <div class="panel">
+                    <h2>🎮 Centre d'entraînement SOC</h2>
+                    <p>Testez vos réflexes. Attention aux faux positifs !</p>
+                    <div class="mission-cards">
+                        <div class="mission-card">
+                            <h3>Mission 1 : Le Bruit de Fond</h3>
+                            <p>Vous subissez un Scan de Port, mais en même temps, le PDG (Employé maladroit) essaie de
+                                se connecter. Bloquez la menace, ignorez le PDG.</p>
+                            <button class="btn btn-attack" onclick="startMission(1)">▶️ Démarrer Mission 1</button>
+                        </div>
+                        <div class="mission-card">
+                            <h3>Mission 2 : Attaque Combinée (APT)</h3>
+                            <p>Un attaquant lance un DDoS pour faire diversion pendant qu'il effectue un Brute Force.
+                                Restez concentré sur les alertes critiques.</p>
+                            <button class="btn btn-attack" onclick="startMission(2)">▶️ Démarrer Mission 2</button>
+                        </div>
+                    </div>
                 </div>
             </div>
 
         </main>
     </div>
+
+    <div id="modal-overlay" class="hidden">
+        <div class="modal-box">
+            <header class="modal-header">
+                <h2 id="modal-title">Titre</h2>
+                <button class="close-btn" onclick="closeModal()">✖</button>
+            </header>
+            <div id="modal-body" class="modal-body">
+            </div>
+        </div>
+    </div>
+
     <script src="script.js"></script>
 </body>
 

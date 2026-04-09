@@ -1,6 +1,7 @@
 :root {
     --bg-dark: #0f172a;
     --bg-panel: #1e293b;
+    --bg-modal: #283548;
     --text-main: #f8fafc;
     --text-muted: #94a3b8;
     --accent: #3b82f6;
@@ -66,6 +67,11 @@ nav li:hover {
     border-left: 4px solid var(--accent);
 }
 
+.mission-tab {
+    color: #c084fc !important;
+    font-weight: bold;
+}
+
 .score-card {
     background: rgba(16, 185, 129, 0.1);
     border: 1px solid var(--info);
@@ -78,6 +84,7 @@ nav li:hover {
     font-size: 2.5rem;
     font-weight: 700;
     color: var(--info);
+    transition: color 0.3s;
 }
 
 /* Main Content & Views */
@@ -98,7 +105,6 @@ header {
     padding-bottom: 15px;
 }
 
-/* Gestion des Vues (Tabs) */
 .view {
     display: none;
     flex-direction: column;
@@ -109,7 +115,7 @@ header {
     display: flex;
 }
 
-/* Stats Grid */
+/* Stats & Panels */
 .stats-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
@@ -141,7 +147,6 @@ header {
     font-size: 0.85rem;
     color: var(--text-muted);
     text-transform: uppercase;
-    letter-spacing: 1px;
 }
 
 .stat-number {
@@ -151,7 +156,6 @@ header {
     margin-top: 5px;
 }
 
-/* Panels & Charts */
 .panel {
     background-color: var(--bg-panel);
     padding: 20px;
@@ -166,7 +170,6 @@ header {
     margin-bottom: 15px;
     color: var(--text-muted);
     text-transform: uppercase;
-    letter-spacing: 1px;
 }
 
 .charts-grid {
@@ -187,7 +190,7 @@ header {
     justify-content: center;
 }
 
-/* Ops Grid (Controls & Terminal) */
+/* Controls & Terminal */
 .ops-grid {
     display: grid;
     grid-template-columns: 1fr 2fr;
@@ -208,7 +211,7 @@ header {
     font-weight: 600;
     cursor: pointer;
     transition: 0.2s;
-    text-align: left;
+    text-align: center;
 }
 
 .btn-attack {
@@ -220,8 +223,6 @@ header {
 .btn-attack:hover {
     background-color: #475569;
     transform: translateY(-2px);
-    border-color: var(--accent);
-    box-shadow: 0 0 10px rgba(59, 130, 246, 0.3);
 }
 
 /* Terminal */
@@ -263,7 +264,19 @@ header {
     margin-right: 10px;
 }
 
-/* Tables (Alerts & History) */
+/* Interactive IP */
+.ip-link {
+    font-family: 'Fira Code', monospace;
+    color: var(--accent);
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.ip-link:hover {
+    color: white;
+}
+
+/* Tables */
 .data-table {
     width: 100%;
     border-collapse: collapse;
@@ -276,17 +289,6 @@ header {
     padding: 12px;
     text-align: left;
     border-bottom: 1px solid #334155;
-}
-
-.data-table th {
-    color: var(--text-muted);
-    text-transform: uppercase;
-    font-size: 0.8rem;
-    background: #0f172a;
-}
-
-.data-table tbody tr:hover {
-    background-color: rgba(255, 255, 255, 0.02);
 }
 
 .badge {
@@ -314,19 +316,15 @@ header {
     border: 1px solid var(--critical);
 }
 
-.ip-font {
-    font-family: 'Fira Code', monospace;
-}
-
-/* Boutons d'action */
+/* Buttons Action */
 .btn-block {
     background: rgba(239, 68, 68, 0.1);
     border: 1px solid var(--critical);
     color: var(--critical);
-    padding: 5px 10px;
+    padding: 4px 8px;
     border-radius: 4px;
     cursor: pointer;
-    transition: 0.2s;
+    font-size: 0.8rem;
 }
 
 .btn-block:hover {
@@ -334,11 +332,129 @@ header {
     color: white;
 }
 
-.btn-blocked {
-    background: var(--info);
-    border: 1px solid var(--info);
-    color: white;
-    padding: 5px 10px;
+.btn-ignore {
+    background: rgba(245, 158, 11, 0.1);
+    border: 1px solid var(--warning);
+    color: var(--warning);
+    padding: 4px 8px;
     border-radius: 4px;
-    cursor: default;
+    cursor: pointer;
+    font-size: 0.8rem;
+}
+
+.btn-ignore:hover {
+    background: var(--warning);
+    color: white;
+}
+
+.btn-edu {
+    background: transparent;
+    border: 1px solid #8b5cf6;
+    color: #8b5cf6;
+    padding: 4px 8px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.8rem;
+}
+
+/* Missions */
+.mission-cards {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.mission-card {
+    background: #0f172a;
+    border: 1px solid #8b5cf6;
+    padding: 20px;
+    border-radius: 8px;
+}
+
+.mission-card p {
+    color: var(--text-muted);
+    margin: 10px 0 20px 0;
+}
+
+/* Modal System */
+.hidden {
+    display: none !important;
+}
+
+#modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(4px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal-box {
+    background: var(--bg-modal);
+    width: 600px;
+    border-radius: 8px;
+    border: 1px solid #475569;
+    overflow: hidden;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+}
+
+.modal-header {
+    background: #1e293b;
+    padding: 15px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #475569;
+}
+
+.modal-body {
+    padding: 20px;
+    max-height: 70vh;
+    overflow-y: auto;
+}
+
+.close-btn {
+    background: transparent;
+    border: none;
+    color: white;
+    font-size: 1.2rem;
+    cursor: pointer;
+}
+
+/* Timeline dans la Modal */
+.timeline {
+    border-left: 2px solid var(--accent);
+    margin-left: 10px;
+    padding-left: 20px;
+}
+
+.timeline-item {
+    position: relative;
+    margin-bottom: 15px;
+}
+
+.timeline-item::before {
+    content: '';
+    position: absolute;
+    left: -26px;
+    top: 5px;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--accent);
+}
+
+.threat-intel {
+    background: #0f172a;
+    padding: 15px;
+    border-radius: 6px;
+    margin-bottom: 20px;
+    border: 1px dashed #475569;
 }
