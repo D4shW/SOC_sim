@@ -148,13 +148,13 @@ La cybersécurité utilise beaucoup de jargon. Voici la traduction en français 
 
 * **WebSocket :** Contrairement à l'API classique où il faut demander l'information, le WebSocket est comme un appel téléphonique. La ligne reste ouverte en continu, et les informations arrivent en direct, sans avoir à rafraîchir la page.
 
-**Faux Positif (FP)** : Une fausse alarme. Le système croit voir une attaque, mais c'est en fait une action normale (ex: un employé qui oublie son mot de passe).
+* **Faux Positif (FP)** : Une fausse alarme. Le système croit voir une attaque, mais c'est en fait une action normale (ex: un employé qui oublie son mot de passe).
 
-**DDoS** : *Distributed Denial of Service*. Comme si 10 000 personnes voulaient rentrer par la même porte en même temps pour faire s'effondrer le bâtiment.
+* **DDoS** : *Distributed Denial of Service*. Comme si 10 000 personnes voulaient rentrer par la même porte en même temps pour faire s'effondrer le bâtiment.
 
-**Injection SQL (SQLi)** : Une technique de piratage où l'on pose une "question truquée" à la base de données web pour lui faire cracher des mots de passe.
+* **Injection SQL (SQLi)** : Une technique de piratage où l'on pose une "question truquée" à la base de données web pour lui faire cracher des mots de passe.
 
-**Threat Intelligence** : Le fait de se renseigner sur l'ennemi (savoir de quel pays vient l'IP, si elle est déjà connue de la police, etc.).
+* **Threat Intelligence** : Le fait de se renseigner sur l'ennemi (savoir de quel pays vient l'IP, si elle est déjà connue de la police, etc.).
 
 ## 9. FAQ (Foire Aux Questions)
 
