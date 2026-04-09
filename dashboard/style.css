@@ -1,0 +1,89 @@
+body {
+    background-color: #1e1e1e;
+    color: #e0e0e0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 20px;
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 2px solid #333;
+    padding-bottom: 10px;
+}
+
+#score-box {
+    font-size: 1.5em;
+    font-weight: bold;
+    color: #4CAF50;
+}
+
+.controls button {
+    background-color: #3a3a3a;
+    color: white;
+    border: 1px solid #555;
+    padding: 10px 15px;
+    margin: 5px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.controls button:hover {
+    background-color: #555;
+}
+
+.btn-report {
+    background-color: #008CBA !important;
+}
+
+#logs {
+    background-color: #121212;
+    padding: 15px;
+    height: 400px;
+    overflow-y: scroll;
+    border: 1px solid #333;
+    font-family: monospace;
+}
+
+.log {
+    padding: 5px;
+    border-bottom: 1px solid #222;
+    display: flex;
+    justify-content: space-between;
+}
+
+.log-INFO {
+    color: #4CAF50;
+}
+
+.log-WARNING {
+    color: #FF9800;
+}
+
+.log-CRITICAL {
+    color: #F44336;
+    font-weight: bold;
+    background-color: rgba(244, 67, 54, 0.1);
+}
+
+.actions button {
+    margin-left: 5px;
+    font-size: 0.8em;
+    padding: 2px 5px;
+}
+
+.hidden {
+    display: none;
+}
+
+#report-modal {
+    position: fixed;
+    top: 20%;
+    left: 20%;
+    width: 60%;
+    background: #2a2a2a;
+    padding: 20px;
+    border: 2px solid white;
+}

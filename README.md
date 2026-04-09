@@ -1,397 +1,163 @@
-# 🛡️ SOC Simulator — Tutoriel Complet
+# SOCsim
 
-## Security Operations Center Simulator en Python
+Bienvenue dans le projet **SOCsim**
 
----
+## 1. Description simple du projet
 
-## 🎯 Qu'est-ce que ce projet ?
+Imaginez que vous êtes le gardien virtuel d'une entreprise. Votre travail consiste à surveiller un écran radar pour repérer les intrus et les bloquer avant qu'ils ne fassent des dégâts.
 
-Ce projet est un **simulateur pédagogique d'un SOC** (Security Operations Center).
+C'est exactement ce que fait ce projet. C'est un simulateur interactif qui reproduit le fonctionnement d'une tour de contrôle de cybersécurité.
 
-Un SOC est le "centre de commandement" de la cybersécurité d'une entreprise. Des analystes y surveillent en permanence les systèmes informatiques pour détecter et répondre aux attaques.
+* **Le moteur (Backend) en Go** crée de fausses attaques informatiques.
 
-Ce simulateur vous permet de :
-- Voir des attaques informatiques en temps réel (simulées)
-- Comprendre comment un SOC analyse les logs
-- Apprendre les concepts de cybersécurité de façon interactive
-- S'entraîner à reconnaître les patterns d'attaque
+* **L'interface (Frontend) en Node.js** vous affiche ce qui se passe en temps réel sur une belle page web.
 
----
+* **Vous (l'Analyste)** devez repérer les alertes rouges et prendre les bonnes décisions pour protéger le système !
 
-## 📦 Structure du projet
+## 2. Fonctionnalités
 
-```
-soc_simulator/
-├── main.py         → Point d'entrée (lancez ce fichier !)
-├── gui.py          → Interface graphique Tkinter
-├── monitor.py      → Orchestrateur (threading)
-├── simulator.py    → Générateur d'événements
-├── analyzer.py     → Moteur de détection
-├── database.py     → Stockage SQLite
-└── config.json     → Configuration
-```
+Voici ce que ce simulateur vous permet de faire :
 
----
+* 🎯 Simulation d'attaques réalistes : Des boutons vous permettent de déclencher de fausses attaques informatiques (comme essayer de deviner un mot de passe en boucle ou scanner le système).
 
-## 🚀 Installation et lancement
+* 👩‍💻 Mode Analyste Interactif : Face à une alerte, c'est à vous de jouer. Vous pouvez choisir de "Bloquer" l'attaquant ou de l'"Ignorer". Chaque bonne décision vous rapporte des points !
 
+* 📊 Dashboard Web en temps réel : Une interface moderne (aux couleurs sombres) qui affiche les événements du système avec un code couleur simple (Vert = Normal, Orange = Attention, Rouge = Critique).
+
+* 📝 Génération de rapports : À la fin de votre session, le simulateur crée un résumé complet de l'attaque et évalue vos décisions.
+
+## 3. Installation
+
+Avant de commencer, vous avez besoin de deux outils gratuits installés sur votre ordinateur.
 ### Prérequis
-- Python 3.7 ou supérieur
-- Aucune bibliothèque externe à installer !
 
-### Lancement
+* Go (le langage de programmation du moteur) : [Télécharger Go](https://go.dev/dl/)
 
-```bash
-# Dans le dossier du projet :
-python main.py
+* Node.js (pour faire tourner la page web) : [Télécharger Node.js](https://nodejs.org/)
 
-# Mode démonstration (sans GUI, pour tester) :
-python main.py --demo
+### Étapes d'installation
+
+* Récupérez le projet sur votre ordinateur (téléchargez le dossier du projet).
+
+* Ouvrez votre terminal (ou Invite de commandes sous Windows).
+
+* Allez dans le dossier de l'interface (dashboard) pour installer les outils nécessaires en copiant-collant ces commandes :
+
+```Bash
+
+cd chemin/vers/le/dossier/dashboard
+npm install express
 ```
 
----
+(Cette commande installe "Express", un petit outil qui permet d'afficher notre page web facilement).
 
-## 📚 Tutoriel étape par étape
+## 4. Lancement du projet
 
-### ÉTAPE 1 : La GUI principale (gui.py)
+Pour que le simulateur fonctionne, nous devons allumer le moteur (Go) ET l'écran (Node.js). Vous allez avoir besoin d'ouvrir **deux fenêtres de terminal.**
 
-**Concept :** Tkinter crée des fenêtres avec des widgets (boutons, zones de texte...).
+### Terminal 1 : Allumer le moteur (Backend)
+Allez dans le dossier principal du projet et tapez :
+```Bash
 
-```python
-import tkinter as tk
-
-# Créer une fenêtre
-root = tk.Tk()
-root.title("Mon SOC")
-root.geometry("800x600")
-
-# Lancer la boucle principale
-root.mainloop()
+go run .
 ```
 
-**Ce que vous voyez :** Une fenêtre vide. C'est votre canevas vierge !
+Si tout va bien, vous verrez : "🚀 Démarrage du Simulateur SOC Backend..."
 
----
+### Terminal 2 : Allumer l'écran (Frontend)
+Allez dans le sous-dossier dashboard et tapez :
+```Bash
 
-### ÉTAPE 2 : Afficher des logs simples
-
-**Concept :** `ScrolledText` permet d'afficher du texte scrollable.
-
-```python
-from tkinter import scrolledtext
-
-# Zone de texte scrollable
-log_area = scrolledtext.ScrolledText(root, height=20)
-log_area.pack(fill="both", expand=True)
-
-# Ajouter du texte
-log_area.insert("end", "2024-01-15 10:30:00 [INFO] Connexion réussie\n")
-log_area.insert("end", "2024-01-15 10:30:05 [WARNING] Tentative échouée\n")
+node server.js
 ```
 
----
+Si tout va bien, vous verrez : "🖥️ Frontend SOC disponible..."
 
-### ÉTAPE 3 : Le simulateur d'attaques
+### Accéder au simulateur :
+Ouvrez votre navigateur internet (Chrome, Firefox, Safari...) et allez à l'adresse suivante : **http://localhost:3000**
 
-**Concept :** On génère des logs fictifs réalistes avec `random`.
+## 5. Structure du projet
 
-```python
-import random
-from datetime import datetime
+Voici à quoi servent les fichiers du projet, expliqués simplement :
 
-def generate_failed_login():
-    ips = ["203.0.113.1", "198.51.100.5"]
-    users = ["admin", "root", "test"]
-    ip = random.choice(ips)
-    user = random.choice(users)
-    return f"{datetime.now()} sshd: Failed password for {user} from {ip}"
+### Le Moteur (Backend en Go) :
 
-# Tester :
-print(generate_failed_login())
-# → 2024-01-15 10:30:00 sshd: Failed password for admin from 203.0.113.1
-```
+* ```main.go``` : C'est la clé de contact. Il démarre l'ensemble du programme.
 
----
+* ```simulator.go``` : C'est le "faux méchant". Il génère les fausses attaques pour vous entraîner.
 
-### ÉTAPE 4 : Connecter les logs à la GUI
+* ```analyzer.go``` : C'est le détective. Il lit toutes les actions et crie "Alerte !" s'il voit quelque chose de louche.
 
-**Concept :** Une fonction callback reçoit les logs et les affiche.
+* ```monitor.go``` : C'est l'arbitre. Il note vos actions (points) et rédige le rapport de fin.
 
-```python
-def add_log(message, level="INFO"):
-    colors = {"INFO": "green", "WARNING": "orange", "CRITICAL": "red"}
-    
-    log_area.config(state="normal")
-    log_area.insert("end", message + "\n", level)
-    log_area.tag_configure(level, foreground=colors[level])
-    log_area.see("end")
-    log_area.config(state="disabled")
-```
+* ```api.go``` : C'est le facteur. Il transporte les messages entre le moteur (Go) et la page web (Node.js).
 
----
+* ```database.go``` : C'est la mémoire. Il retient tout ce qui s'est passé (les historiques) le temps de la simulation.
 
-### ÉTAPE 5 : Analyser les logs avec regex
+### L'Écran (Frontend en Node.js) : dossier ```/dashboard/```
 
-**Concept :** `re` (regular expressions) cherche des patterns dans le texte.
+* ```server.js``` : Un mini-serveur qui sert juste à afficher votre page web.
 
-```python
-import re
+* ```index.html``` : Le squelette de la page web (les boutons, les textes).
 
-def detect_brute_force(log_text):
-    # Chercher "Failed password" dans le log
-    pattern = r"Failed password for (.+) from ([\d.]+)"
-    match = re.search(pattern, log_text)
-    
-    if match:
-        username = match.group(1)  # 1er groupe capturé
-        ip = match.group(2)        # 2ème groupe capturé
-        return f"ALERTE: Brute force par {ip} sur compte {username}"
-    return None
-```
+* ```style.css``` : La peinture de la page web (les couleurs, la mise en page).
 
-**Regex expliqués :**
-- `(.+)` = capture tout caractère, une fois ou plus
-- `([\d.]+)` = capture chiffres et points (adresse IP)
-- `\b` = limite de mot
+* ```script.js``` : L'intelligence de la page web. C'est lui qui demande les nouvelles informations au "facteur" (api.go) pour rafraîchir l'écran.
 
----
+## 6. Comment utiliser le simulateur
 
-### ÉTAPE 6 : Ajouter le threading
+1. **Surveillez l'écran** : Au lancement, tout est calme.
 
-**Problème :** Si la simulation tourne dans le thread principal, la GUI se "gèle".
+2. **Lancez une attaque** : Cliquez sur le bouton "Lancer Brute Force SSH".
 
-**Solution :** Un thread séparé pour la simulation !
+3. **Lisez les logs** : Vous allez voir apparaître des lignes oranges (des tentatives de connexion échouées).
 
-```python
-import threading
-import time
+4. **Répondez à l'alerte** : Au bout de plusieurs échecs, une alerte ROUGE apparaît. Des boutons s'affichent à côté. Cliquez sur Bloquer IP.
 
-def simulation_loop():
-    while running:
-        event = generate_event()
-        # ⚠️ On ne peut PAS modifier la GUI directement depuis ici !
-        # On utilise une queue thread-safe
-        event_queue.put(event)
-        time.sleep(random.uniform(0.5, 2.0))
+5. **Vérifiez votre score** : Regardez en haut de l'écran, vos points ont augmenté car vous avez pris la bonne décision !
 
-# Démarrer le thread
-thread = threading.Thread(target=simulation_loop, daemon=True)
-thread.start()
-```
+6. **Générez le rapport** : Cliquez sur "Générer Rapport" pour voir le bilan de l'attaque et comprendre ce qui s'est passé.
 
-**Important :** `daemon=True` = le thread s'arrête avec le programme principal.
+## 7. Exemple d'utilisation : Le scénario du "Brute Force"
 
----
+**Ce qu'il se passe en coulisses :** Un programme malveillant essaie de se connecter à votre serveur en devinant des mots de passe. Il essaie : "admin123", puis "password", puis "123456"... très rapidement.
 
-### ÉTAPE 7 : Couleurs et alertes
+**Dans votre simulateur :**
 
-**Concept :** Les tags Tkinter permettent de colorer des portions de texte.
+1. L'outil ```analyzer.go``` remarque que la machine numéro ```192.168.1.50``` s'est trompée de mot de passe 5 fois de suite.
 
-```python
-# Définir les styles
-log_text.tag_configure("INFO",     foreground="#00FF88")  # Vert
-log_text.tag_configure("WARNING",  foreground="#FF9900")  # Orange  
-log_text.tag_configure("CRITICAL", foreground="#FF2255")  # Rouge
+2. Il crée une alerte rouge "CRITIQUE".
 
-# Utiliser le tag lors de l'insertion
-log_text.insert("end", "[CRITICAL] Attaque détectée!\n", "CRITICAL")
-```
-
----
-
-### ÉTAPE 8 : Statistiques avec StringVar
-
-**Concept :** `StringVar` est une variable tkinter qui met à jour l'affichage automatiquement.
-
-```python
-# Créer la variable
-count = tk.StringVar(value="0")
-
-# L'attacher à un label
-label = tk.Label(root, textvariable=count, font=("Courier", 20))
-label.pack()
-
-# La mettre à jour (le label s'actualise automatiquement !)
-count.set("42")
-```
-
----
-
-### ÉTAPE 9 : SQLite pour la persistance
-
-**Concept :** SQLite stocke les données dans un fichier local.
-
-```python
-import sqlite3
-
-# Connexion (crée le fichier si inexistant)
-conn = sqlite3.connect("soc.db")
-cursor = conn.cursor()
-
-# Créer une table
-cursor.execute("""
-    CREATE TABLE IF NOT EXISTS events (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        timestamp TEXT,
-        level TEXT,
-        message TEXT
-    )
-""")
-
-# Insérer des données
-cursor.execute(
-    "INSERT INTO events (timestamp, level, message) VALUES (?, ?, ?)",
-    ("2024-01-15 10:30:00", "CRITICAL", "Brute force détecté")
-)
-conn.commit()
-
-# Lire les données
-cursor.execute("SELECT * FROM events ORDER BY id DESC LIMIT 10")
-for row in cursor.fetchall():
-    print(row)
-```
-
----
-
-### ÉTAPE 10 : Améliorer le simulateur
-
-Ajoutez de nouveaux types d'attaques et des scénarios complets :
-
-```python
-def generate_apt_scenario():
-    """Scénario APT complet : 6 phases d'attaque"""
-    return [
-        generate_port_scan(),           # Phase 1: Reconnaissance
-        generate_ssh_brute_force(),     # Phase 2: Intrusion
-        generate_sql_injection(),       # Phase 3: Exploitation
-        generate_malware_detection(),   # Phase 4: Installation
-        generate_privilege_escalation(),# Phase 5: Escalade
-        generate_data_exfiltration(),   # Phase 6: Vol de données
-    ]
-```
-
----
-
-## 🔥 Types d'attaques simulées
-
-| Attaque | Description | Indicateurs |
-|---------|-------------|-------------|
-| **Brute Force SSH** | Essai massif de mots de passe | Nombreux "Failed password" |
-| **Port Scan** | Reconnaissance des services ouverts | Logs iptables en rafale |
-| **SQL Injection** | Injection de code dans les formulaires | Payloads SQL dans les logs web |
-| **DDoS** | Saturation par millions de requêtes | Pic de trafic soudain |
-| **Malware** | Logiciel malveillant détecté | Alerte antivirus |
-| **Privilege Escalation** | Élévation vers root | Commandes sudo suspectes |
-| **Data Exfiltration** | Vol de données | Gros transferts sortants |
-
----
-
-## 🎯 Framework MITRE ATT&CK
-
-Chaque attaque est liée à une technique MITRE ATT&CK :
-
-| ID | Technique | Notre simulation |
-|----|-----------|-----------------|
-| T1110.001 | Brute Force: Password Guessing | SSH Brute Force |
-| T1046 | Network Service Discovery | Port Scan |
-| T1190 | Exploit Public-Facing Application | SQL Injection |
-| T1498 | Network Denial of Service | DDoS |
-| T1204 | User Execution | Malware Detection |
-| T1548 | Abuse Elevation Control Mechanism | Privilege Escalation |
-| T1048 | Exfiltration Over Alt Protocol | Data Exfiltration |
-
-MITRE ATT&CK est **le référentiel mondial** des techniques d'attaque.
-URL : https://attack.mitre.org/
-
----
-
-## 💡 Idées d'améliorations avancées
-
-### Niveau Intermédiaire
-- **Graphiques en temps réel** avec `matplotlib` ou `plotly`
-- **Export des logs** en CSV ou JSON
-- **Notifications système** (toast notifications)
-- **Mode replay** : rejouer une simulation enregistrée
-
-### Niveau Avancé
-- **Détection d'anomalies ML** avec `scikit-learn`
-  ```python
-  from sklearn.ensemble import IsolationForest
-  # Détecter les comportements anormaux statistiquement
-  ```
-- **API IP Reputation** (AbuseIPDB, VirusTotal)
-  ```python
-  import requests
-  # Vérifier si une IP est connue comme malveillante
-  response = requests.get(f"https://api.abuseipdb.com/api/v2/check?ipAddress={ip}")
-  ```
-- **Règles Sigma** : implémenter le standard de détection Sigma
-- **Intégration MISP** : partage d'indicators of compromise (IoC)
-
-### Niveau Expert
-- **Machine Learning UEBA** : User and Entity Behavior Analytics
-- **Threat Hunting** automatisé
-- **SOAR** : Orchestration et réponse automatisée
-- **Integration Elasticsearch** pour les vraies recherches de logs
-
----
-
-## 🏆 Valoriser ce projet (CV / Portfolio)
-
-### Sur votre CV
-```
-Projet : SOC Simulator (Python)
-- Développé un simulateur de Security Operations Center avec GUI Tkinter
-- Implémenté 7 types d'attaques (Brute Force, SQLi, DDoS, Ransomware...)
-- Créé un moteur de détection basé sur des règles regex (MITRE ATT&CK)
-- Architecture multi-threads (simulation, analyse, GUI en parallèle)
-- Base de données SQLite pour la persistance et l'historique
-Technologies : Python, Tkinter, SQLite, Threading, Regex
-```
-
-### Sur GitHub
-- Créez un README avec des screenshots
-- Ajoutez des "badges" (Python version, license)
-- Documentez chaque module
-
-### Compétences démontrées
-- Python intermédiaire/avancé
-- Concepts SOC/SIEM
-- Architecture multi-threads
-- Base de données SQL
-- Analyse de logs
-- Framework MITRE ATT&CK
-- Développement d'outils de sécurité
-
----
-
-## 📖 Lexique cybersécurité
-
-| Terme | Définition |
-|-------|------------|
-| **SOC** | Security Operations Center — équipe de surveillance 24/7 |
-| **SIEM** | Security Information and Event Management — agrège et analyse les logs |
-| **IOC** | Indicator of Compromise — preuve d'une attaque (IP, hash, domaine) |
-| **TTPs** | Tactics, Techniques and Procedures — méthodes des attaquants |
-| **APT** | Advanced Persistent Threat — attaque ciblée longue durée |
-| **Brute Force** | Essai systématique de toutes les combinaisons possibles |
-| **Privilege Escalation** | Obtenir des droits supérieurs à ceux accordés |
-| **Lateral Movement** | Se déplacer d'une machine à l'autre dans un réseau |
-| **Exfiltration** | Vol et transfert de données vers l'extérieur |
-| **C2/C&C** | Command & Control — serveur qui contrôle les malwares |
-| **EDR** | Endpoint Detection and Response — antivirus avancé |
-| **WAF** | Web Application Firewall — protège les applications web |
-
----
-
-## 🙏 Ressources pour aller plus loin
-
-- **TryHackMe** : https://tryhackme.com (lab cybersécurité interactif)
-- **MITRE ATT&CK** : https://attack.mitre.org
-- **Wazuh** : https://wazuh.com (SIEM open-source)
-- **Elastic SIEM** : https://www.elastic.co/siem
-- **Splunk Free** : https://www.splunk.com/en_us/download.html
-
----
-
-*Projet créé à des fins pédagogiques. Ne pas utiliser pour des activités malveillantes.*
+3. Vous, en tant qu'analyste, voyez l'alerte. Vous comprenez que ce n'est pas un humain qui oublie son mot de passe, mais un robot.
+
+4. Vous cliquez sur "Bloquer". Le simulateur coupe l'accès à cette machine. Le système est sauvé !
+
+## 8. Lexique (pour tout comprendre)
+
+La cybersécurité utilise beaucoup de jargon. Voici la traduction en français simple avec des analogies :
+
+* **SOC (Security Operations Center) :** C'est une équipe de vigiles informatiques. Imaginez la salle de vidéosurveillance d'un grand magasin, mais pour protéger des ordinateurs.
+
+* **SIEM :** C'est l'écran géant qu'utilise le SOC. Il regroupe toutes les alarmes de l'entreprise au même endroit pour faciliter la surveillance. C'est exactement le tableau de bord web que vous venez de lancer !
+
+* **Brute force (Attaque par force brute) :** C'est comme un voleur qui essaierait toutes les clés d'un énorme trousseau de clés une par une, très vite, jusqu'à ce que la porte s'ouvre.
+
+* **Logs (Journaux d'événements) :** C'est le journal intime de l'ordinateur. L'ordinateur y note tout : "À 14h, Paul s'est connecté", "À 14h05, une erreur s'est produite".
+
+* **API (Interface de Programmation) :** C'est le serveur au restaurant. Vous (la page web) lui donnez votre commande ("Je veux voir les alertes"), le serveur (API) va en cuisine le demander au cuisinier (le programme Go), et vous rapporte votre plat.
+
+* **WebSocket :** Contrairement à l'API classique où il faut demander l'information, le WebSocket est comme un appel téléphonique. La ligne reste ouverte en continu, et les informations arrivent en direct, sans avoir à rafraîchir la page.
+
+## 9. FAQ (Foire Aux Questions)
+
+**Faut-il installer une vraie base de données (comme MySQL) ?**
+
+Non. Pour que ce projet soit facile à utiliser par les débutants, la "base de données" (database.go) garde tout dans la mémoire vive temporaire (RAM). Si vous coupez le programme, l'historique repart à zéro.
+
+**Est-ce que ça peut protéger mon propre ordinateur ?**
+
+Non, c'est un simulateur à but éducatif. Il ne lit pas les vraies attaques sur votre ordinateur, il génère de fausses attaques pour vous apprendre à réagir.
+
+**Pourquoi utiliser Go et Node.js en même temps ?**
+
+C'est pour vous montrer une architecture "moderne" très utilisée en entreprise. Go est très puissant pour analyser des milliers de lignes (les logs) sans ralentir, tandis que Node.js et JavaScript sont parfaits pour créer des pages web jolies et dynamiques.

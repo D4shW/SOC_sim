@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <title>SIEM / SOC Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <header>
+        <h1>🛡️ Centre d'Opérations de Sécurité (SOC)</h1>
+        <div id="score-box">Score Analyste : <span id="score">0</span></div>
+    </header>
+
+    <main>
+        <section class="controls">
+            <h2>Simulateur d'Attaques</h2>
+            <button onclick="launchAttack('brute')">Lancer Brute Force SSH</button>
+            <button onclick="launchAttack('scan')">Lancer Scan de Ports</button>
+            <button onclick="generateReport()" class="btn-report">Générer Rapport</button>
+        </section>
+
+        <section class="logs-container">
+            <h2>Flux de Logs en Temps Réel</h2>
+            <div id="logs"></div>
+        </section>
+
+        <section id="report-modal" class="hidden">
+            <h2>Rapport d'Incident</h2>
+            <pre id="report-content"></pre>
+            <button onclick="closeReport()">Fermer</button>
+        </section>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
