@@ -6,7 +6,7 @@ let lineChart, doughnutChart;
 let eventsTimeline = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
 let currentSecondEvents = 0;
 
-// NOUVEAU : Variables UX
+// UX Variables
 let currentFilter = 'ALL';
 let currentSearch = '';
 let isPaused = false;
@@ -18,6 +18,7 @@ const explanations = {
     'scan': "<strong>Scan de Ports :</strong> L'attaquant 'toque' à toutes les portes du serveur pour voir lesquelles sont ouvertes.",
     'sqli': "<strong>Injection SQL :</strong> L'attaquant insère du code de base de données dans un formulaire web pour tromper le système.",
     'ddos': "<strong>DDoS :</strong> Des milliers d'ordinateurs envoient des requêtes en même temps pour saturer votre serveur.",
+    'malware': "<strong>Malware / Ransomware :</strong> Un fichier malveillant a été téléchargé et exécuté. L'attaquant tente de chiffrer vos données ou de se connecter à un serveur de contrôle externe (C2).",
     'fp': "<strong>Faux Positif :</strong> Une activité qui semble suspecte mais qui est légitime.",
     'compromised': "🚨 <strong>SERVEUR COMPROMIS :</strong> Vous avez ignoré une attaque réelle. L'attaquant a exploité la vulnérabilité, installé une porte dérobée (backdoor) et pris le contrôle de la machine. C'est le Game Over pour l'entreprise."
 };
@@ -42,7 +43,7 @@ function switchView(viewName, element) {
     document.getElementById('page-title').innerText = titles[viewName];
 }
 
-// --- NOUVEAU : UX (Filtres, Recherche, Pause, Vitesse) ---
+// --- UX (Filtres, Recherche, Pause, Vitesse) ---
 function filterLogs() {
     currentSearch = document.getElementById('search-logs').value.toLowerCase();
     currentFilter = document.getElementById('filter-level').value;
@@ -58,7 +59,7 @@ function togglePause() {
     } else {
         btn.innerText = "⏸️ Pause";
         btn.classList.remove('paused');
-        renderTerminal(); // Affiche les logs arrivés pendant la pause
+        renderTerminal();
     }
 }
 
@@ -94,7 +95,6 @@ function createLog(level, message, ip, type = 'general', isFalsePositive = false
 
     updateOverviewDashboard();
 
-    // NOUVEAU : Logique d'affichage Terminal optimisée avec filtres et pause
     if (!isPaused) {
         if ((currentFilter === 'ALL' || logEntry.level === currentFilter) &&
             (!currentSearch || logEntry.message.toLowerCase().includes(currentSearch) || logEntry.ip.includes(currentSearch))) {
@@ -110,7 +110,6 @@ function renderTerminal() {
     const terminal = document.getElementById('terminal');
     terminal.innerHTML = '';
 
-    // Garde seulement les 100 derniers pour éviter les lags navigateurs
     const filteredLogs = allLogs.filter(log => {
         if (currentFilter !== 'ALL' && log.level !== currentFilter) return false;
         if (currentSearch && !log.message.toLowerCase().includes(currentSearch) && !log.ip.includes(currentSearch)) return false;
@@ -148,7 +147,7 @@ function updateOverviewDashboard() {
 }
 
 function addLogToAlertsTable(log) {
-    if (log.ip === "SYSTEM") return; // Ne pas mettre les logs système dans les alertes
+    if (log.ip === "SYSTEM") return;
     const tbody = document.getElementById('alerts-table-body');
     const tr = document.createElement('tr');
     tr.innerHTML = `
@@ -172,9 +171,9 @@ function addLogToHistoryTable(log) {
     tbody.insertBefore(tr, tbody.firstChild);
 }
 
-// --- NOUVEAU : CONSÉQUENCES ET ERREUR HUMAINE ---
+// --- CONSÉQUENCES ET ERREUR HUMAINE ---
 function handleAlert(ip, isFP, action, btnElement) {
-    if (isCompromised) return; // Si c'est game over, on ne peut plus jouer
+    if (isCompromised) return;
 
     let parentCell = btnElement.parentElement;
 
@@ -197,13 +196,9 @@ function handleAlert(ip, isFP, action, btnElement) {
             createLog("INFO", `Succès SOC : Faux positif bien identifié pour ${ip}. Le Directeur peut travailler. +50 Pts.`, "SOC_ADMIN");
             document.getElementById('score').style.color = "var(--info)";
         } else {
-            // ==========================================
-            // GAME OVER : IGNORE UNE VRAIE ATTAQUE
-            // ==========================================
             isCompromised = true;
             stats.score -= 500;
 
-            // UI Update Game Over
             document.getElementById('score').style.color = "var(--critical)";
             document.body.classList.add('compromised-flash');
 
@@ -240,14 +235,14 @@ function analyzeIP(ip) {
     html += `</div>`;
 
     document.getElementById('modal-title').innerText = `Analyse : ${ip}`;
-    document.querySelector('.modal-header').style.background = "#1e293b"; // Reset color
+    document.querySelector('.modal-header').style.background = "#1e293b";
     document.getElementById('modal-body').innerHTML = html;
     document.getElementById('modal-overlay').classList.remove('hidden');
 }
 
 function openExplanation(type) {
     document.getElementById('modal-title').innerText = `🎓 Comprendre l'Alerte`;
-    document.querySelector('.modal-header').style.background = "#1e293b"; // Reset color
+    document.querySelector('.modal-header').style.background = "#1e293b";
     document.getElementById('modal-body').innerHTML = `<p style="line-height:1.6; font-size:1.1rem;">${explanations[type] || explanations['fp']}</p>`;
     document.getElementById('modal-overlay').classList.remove('hidden');
 }
@@ -256,9 +251,9 @@ function closeModal() {
     document.getElementById('modal-overlay').classList.add('hidden');
 }
 
-// --- GÉNÉRATEUR D'ATTAQUES (Prend en compte la vitesse) ---
+// --- GÉNÉRATEUR D'ATTAQUES ---
 function triggerAttack(type) {
-    if (isCompromised) return; // Stop si game over
+    if (isCompromised) return;
 
     const ip = `${Math.floor(Math.random() * 255)}.${Math.floor(Math.random() * 255)}.${Math.floor(Math.random() * 255)}.1`;
 
@@ -294,6 +289,14 @@ function triggerAttack(type) {
         for (let i = 0; i < 15; i++) setTimeout(() => createLog("INFO", "GET / HTTP/1.1", `Botnet_${i}`, 'ddos'), (i * 50) / simSpeed);
         setTimeout(() => createLog("CRITICAL", "ATTAQUE DDoS VOLUMÉTRIQUE", "Multiple IPs", 'ddos', false), 800 / simSpeed);
     }
+    else if (type === 'malware') {
+        // NOUVEAU : Le code du Malware restauré !
+        const targetIp = "10.0.5.42";
+        createLog("INFO", "Téléchargement fichier : invoice_urgent.pdf.exe", targetIp, 'malware');
+        setTimeout(() => createLog("WARNING", "Processus enfant suspect créé (cmd.exe)", targetIp, 'malware'), 1500 / simSpeed);
+        setTimeout(() => createLog("WARNING", "Connexion réseau vers un domaine C2 (Tor)", targetIp, 'malware'), 2200 / simSpeed);
+        setTimeout(() => createLog("CRITICAL", "ALERTE EDR : EXECUTION RANSOMWARE (WannaCry variant)", targetIp, 'malware', false), 3000 / simSpeed);
+    }
 }
 
 // --- MISSIONS ---
@@ -304,7 +307,7 @@ function startMission(id) {
     }
     switchView('overview', document.querySelector('#nav-menu li:first-child'));
     createLog("INFO", `--- DÉBUT DE LA MISSION ${id} ---`, "SYSTEM");
-    simSpeed = 1; // On remet la vitesse normale pour la mission
+    simSpeed = 1;
     document.getElementById('sim-speed').value = "1";
 
     if (id === 1) {

@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SOCsim | Advanced Threat Analytics</title>
+    <title>SOC | Advanced Threat Analytics V4.1</title>
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600&family=Inter:wght@400;700&display=swap"
         rel="stylesheet">
@@ -14,7 +14,7 @@
 <body>
     <div class="siem-layout">
         <aside class="sidebar">
-            <div class="logo"><span class="shield">🛡️</span> SOCsim</div>
+            <div class="logo"><span class="shield">🛡️</span> SOC_SIM</div>
             <nav>
                 <ul id="nav-menu">
                     <li class="active" onclick="switchView('overview', this)">📊 Vue d'ensemble</li>
@@ -68,6 +68,7 @@
                             <button class="btn btn-attack" onclick="triggerAttack('scan')">📡 Scan de Ports</button>
                             <button class="btn btn-attack" onclick="triggerAttack('sqli')">💉 Injection SQL</button>
                             <button class="btn btn-attack" onclick="triggerAttack('ddos')">🌊 Attaque DDoS</button>
+                            <button class="btn btn-attack" onclick="triggerAttack('malware')">🦠 Malware / EDR</button>
                             <button class="btn btn-attack" style="border-color: #f59e0b;"
                                 onclick="triggerAttack('false_positive')">🚨 Faux Positif (Employé)</button>
                         </div>
@@ -142,8 +143,8 @@
                     <div class="mission-cards">
                         <div class="mission-card">
                             <h3>Mission 1 : Le Bruit de Fond</h3>
-                            <p>Vous subissez un Scan de Port, mais en même temps, le PDG (Employé maladroit) essaie de
-                                se connecter. Bloquez la menace, ignorez le PDG.</p>
+                            <p>Vous subissez un Scan de Port, mais en même temps, le PDG essaie de se connecter. Bloquez
+                                la menace, ignorez le PDG.</p>
                             <button class="btn btn-attack" onclick="startMission(1)">▶️ Démarrer Mission 1</button>
                         </div>
                         <div class="mission-card">
