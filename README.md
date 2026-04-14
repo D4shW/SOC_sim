@@ -86,10 +86,6 @@ Voici à quoi servent les fichiers du projet, expliqués simplement :
 
 * ```simulator.go``` : C'est le "faux méchant". Il génère les fausses attaques pour vous entraîner.
 
-* ```analyzer.go``` : C'est le détective. Il lit toutes les actions et crie "Alerte !" s'il voit quelque chose de louche.
-
-* ```monitor.go``` : C'est l'arbitre. Il note vos actions (points) et rédige le rapport de fin.
-
 * ```api.go``` : C'est le facteur. Il transporte les messages entre le moteur (Go) et la page web (Node.js).
 
 * ```database.go``` : C'est la mémoire. Il retient tout ce qui s'est passé (les historiques) le temps de la simulation.
